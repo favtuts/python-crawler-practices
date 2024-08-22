@@ -188,3 +188,20 @@ We can query the elemant by selector = "body" to get full HTML content body
 ```sh
 $ pipenv run python extract_html.py
 ```
+
+
+# Extract SPA Web content
+
+Waiting for the content to load
+```python
+await page.waitForSelector('#content');
+await page.waitForSelector('#root');
+await page.waitForSelector('body');
+```
+
+
+# References
+* https://stackoverflow.com/questions/69980581/get-entire-playwright-page-in-html-and-text
+* https://www.roborabbit.com/blog/web-scraping-with-playwright-in-python/
+* https://blog.apify.com/scraping-single-page-applications-with-playwright/
+* https://crawlee.dev/docs/examples/playwright-crawler
