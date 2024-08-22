@@ -199,9 +199,138 @@ await page.waitForSelector('#root');
 await page.waitForSelector('body');
 ```
 
+You may need to provide UserAgent and wail util the `domcontentloaded`, example:
+```python
+from playwright.sync_api import sync_playwright
+
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=True)
+    # user_agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36"
+    ua = (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/69.0.3497.100 Safari/537.36"
+    )
+    url = (
+        "https://www.apple.com/br/shop/product/MV7N2BE/A/airpods-com-estojo-de-recarga"
+    )
+    page = browser.new_page(user_agent=ua)
+    page.goto(url, wait_until="domcontentloaded")
+    sel = "span.as-price-installments:last-child"
+    text = (
+        page.wait_for_selector(sel)
+        .text_content()
+        .replace("à vista (10% de desconto)", "")
+        .strip()
+    )
+    print(text)  # => R$ 1.399,50
+    browser.close()
+```
+
+
+# Extract text from HTML
+
+After you extract HTML content using Playwright, you may want to extract the text only from HTML codes.
+
+
+## Using BeautifulSoup
+
+You just have to install BeautifulSoup before 
+```sh
+pipenv install beautifulsoup4
+```
+
+Then use the piece of code for extracting text without getting javascript or not wanted things
+```python
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
+
+url = "http://news.bbc.co.uk/2/hi/health/2284783.stm"
+html = urlopen(url).read()
+soup = BeautifulSoup(html, features="html.parser")
+
+# kill all script and style elements
+for script in soup(["script", "style"]):
+    script.extract()    # rip it out
+
+# get text
+text = soup.get_text()
+
+# break into lines and remove leading and trailing space on each
+lines = (line.strip() for line in text.splitlines())
+# break multi-headlines into a line each
+chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
+# drop blank lines
+text = '\n'.join(chunk for chunk in chunks if chunk)
+
+print(text)
+```
+
+## Using html2text Library
+
+The [html2text](https://pypi.org/project/html2text/) Turn HTML into equivalent Markdown-structured text.
+```sh
+pipenv install html2text
+```
+
+Here is an example:
+```python
+import html2text
+html_data = "<p>Check out my [blog](http://example.com)!</p>"
+text_maker = html2text.HTML2Text()
+text_maker.ignore_links = True
+plain_text = text_maker.handle(html_data)
+print(plain_text)
+```
+
+# Make Absolute links in HTML 
+
+Relative links can be found in the following HTML tags:a, link, img
+
+```python
+from urllib.parse import urljoin
+from bs4 import BeautifulSoup
+
+def MakeAbsoluteLinks(url, soup):
+    '''
+        Convert all links in BS object to absolute
+        url - base url (downloaded)
+        soup - soup object
+    '''
+    # Find all a tags
+    for a in soup.findAll('a'):
+        # if this tag have href property
+        if a.get('href'):
+            # Make link in absolute format
+            a['href'] = urljoin(url, a['href'])
+    # Find all link tags
+    for link in soup.findAll('link'):
+        # if this tag have href property
+        if link.get('href'):
+            # Make link in absolute format
+            link['href'] = urljoin(url, link['href'])
+    # Find all img tags
+    for img in soup.findAll('img'):
+        # if this tag have src property
+        if img.get('src'):
+            # Make link in absolute format
+            img['src'] = urljoin(url, img['src'])
+
+# Process HTML data into soup structure
+soup = BeautifulSoup(response.content, 'lxml')
+# Convert relative links into absolute if any
+MakeAbsoluteLinks(url, soup)
+
+print(soup.prettify())
+```
+
 
 # References
 * https://stackoverflow.com/questions/69980581/get-entire-playwright-page-in-html-and-text
 * https://www.roborabbit.com/blog/web-scraping-with-playwright-in-python/
 * https://blog.apify.com/scraping-single-page-applications-with-playwright/
 * https://crawlee.dev/docs/examples/playwright-crawler
+* https://stackoverflow.com/questions/328356/extracting-text-from-html-file-using-python
+* https://stackoverflow.com/questions/76122020/playwright-does-not-render-js-scripts-and-hence-the-html-is-not-fully-loaded
+* https://stackoverflow.com/questions/71874282/ubuntu-python-playright-headless-true-get-wrong-page
+* http://mycoding.uk/a/python__how_to_make_absolute_links_in_beautifulsoup.html

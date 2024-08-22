@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 playwright = "*"
+beautifulsoup4 = "*"
+html2text = "*"
 
 [dev-packages]
 
