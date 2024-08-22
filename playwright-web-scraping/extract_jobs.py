@@ -14,6 +14,10 @@ with sync_playwright() as p:
         job_title = job_element.inner_html()
         link = job_element.get_attribute("href")  
         
+        job_element.click() # go to the link
+        applicant = page.locator(".applicants").inner_html()
+        page.go_back()
+        
         company = card.locator(".company").inner_html()
         location = card.locator(".location").inner_html()
         salary = card.locator(".salary").inner_html()
@@ -22,6 +26,7 @@ with sync_playwright() as p:
         print("Company:", company)
         print("Salary: ", salary)
         print("Location: ", location)
+        print("Applicants: ", applicant)
         print()
                 
     browser.close()

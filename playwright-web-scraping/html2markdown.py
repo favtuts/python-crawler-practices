@@ -39,7 +39,7 @@ soup = BeautifulSoup(html, features="html.parser")
 url = 'https://emteller.vn/'
 MakeAbsoluteLinks(url, soup)
 
-html = soup.prettify()
+html = soup.prettify("utf-8")
 
 text_maker = html2text.HTML2Text()
 text_maker.ignore_links = True

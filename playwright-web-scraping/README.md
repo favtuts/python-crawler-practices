@@ -182,11 +182,43 @@ Salary:  $121,000 / year
 Location:  Madagascar
 ```
 
+
+
 # Get full HTML content
 
 We can query the elemant by selector = "body" to get full HTML content body
 ```sh
 $ pipenv run python extract_html.py
+```
+
+# Scrape More Data
+
+When you click on a [job on the board](https://playground.roborabbit.com/jobs/), you will be redirected to [Job Detail page](https://playground.roborabbit.com/jobs/G4NBnofFz1Y-accounting-developer/). In the detail job page we can see more data like number of applicants.
+
+To scrape these details, you can click on the links using `click()` and find the target elements using similar methods. Then, use `page.go_back()` to go back to the main page and continue with the next job in the list.
+
+```python
+...
+for card in job_card:
+      
+        job_element = card.locator("a") 
+				...   
+        job_element.click() # go to the link
+        applicant = page.locator(".applicants").inner_html()
+        page.go_back()
+        
+        company = card.locator(".company").inner_html()
+        location = card.locator(".location").inner_html()
+        salary = card.locator(".salary").inner_html()
+        
+        # Print the extracted text and link
+        print("Job Title:", job_title, " - ", link)
+        print("Company:", company)
+        print("Salary: ", salary)
+        print("Location: ", location)
+        print("Applicants: ", applicant)
+        print()
+...
 ```
 
 

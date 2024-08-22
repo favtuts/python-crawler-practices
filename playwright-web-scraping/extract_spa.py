@@ -19,8 +19,7 @@ async def run():
         url = (
             "https://emteller.vn/"
         )              
-        
-        
+                
         await page.goto(url)        
         await page.wait_for_timeout(5000)
         await page.keyboard.press('PageDown')
@@ -32,7 +31,7 @@ async def run():
         await page.wait_for_load_state(state="domcontentloaded")        
         await page.keyboard.press('PageDown')
         """
-                                
+
         #waiting for content to load
         #for a specific selector to appear on the page        
         #await page.wait_for_selector('#root');
@@ -42,7 +41,7 @@ async def run():
         fullHtml = await page.content()
         print(f'Full HTML Content:\n{fullHtml}')
         print(f'***************************')
-        bodyHtml = await page.inner_html('body')
+        bodyHtml = await page.inner_text('body')
         print(f'Body Content:\n{bodyHtml}')            
         
         #close the browser
