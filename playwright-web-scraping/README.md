@@ -1,5 +1,5 @@
 # Web Scraping with Playwright in Python
-
+* https://tuts.heomi.net/web-scraping-with-playwright-in-python/
 
 # Preparing the Python environment
 
@@ -257,6 +257,11 @@ with sync_playwright() as p:
     )
     print(text)  # => R$ 1.399,50
     browser.close()
+```
+
+Run the code SPA script:
+```bash
+pipenv run python extract_spa.py
 ```
 
 

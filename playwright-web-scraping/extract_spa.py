@@ -17,9 +17,11 @@ async def run():
         
         #go to the site        
         url = (
-            "https://emteller.vn/"
+            #"https://emteller.vn/"
+            #"https://insight.vsi-international.com/"
+            "https://insight.vsi-international.com/tong-quan-cong-ty/"
         )              
-                
+        
         await page.goto(url)        
         await page.wait_for_timeout(5000)
         await page.keyboard.press('PageDown')
